@@ -1,7 +1,14 @@
 import React from 'react';
+import Header from './components/Header';
+
+import { Box } from '@chakra-ui/react';
 
 function App() {
-  return <div className='App'>hi</div>;
+  return (
+    <Box my={5} mx={20}>
+      <Header />
+    </Box>
+  );
 }
 
 export default App;
