@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, Input } from '@chakra-ui/react';
 import { Autocomplete, useJsApiLoader } from '@react-google-maps/api';
 import { Libraries } from '@react-google-maps/api/dist/utils/make-load-script-url';
+import { PlacesContext, ContextInterface } from '../context/PlacesProvider';
 
 // needs to be delcared outside of component
 const libraries: Libraries = ['places'];
@@ -12,12 +13,12 @@ declare var process: {
   };
 };
 
-type Place = {
-  lat?: number;
-  lng?: number;
+type AutocompleteInputProps = {
+  id: number;
 };
 
-const AutocompleteInput = () => {
+const AutocompleteInput = (props: AutocompleteInputProps) => {
+  const { places, setPlaces } = useContext(PlacesContext) as ContextInterface;
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
@@ -26,17 +27,16 @@ const AutocompleteInput = () => {
 
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
-  const [place, setPlace] = useState<Place>({
-    lat: undefined,
-    lng: undefined,
-  });
 
   const onPlaceChanged = () => {
     if (autocomplete) {
       const newPlace = autocomplete.getPlace();
-      setPlace({
-        lat: newPlace.geometry?.location?.lat(),
-        lng: newPlace.geometry?.location?.lng(),
+      setPlaces({
+        ...places,
+        [props.id]: {
+          lat: newPlace.geometry?.location?.lat(),
+          lng: newPlace.geometry?.location?.lng(),
+        },
       });
     }
   };
@@ -50,7 +50,7 @@ const AutocompleteInput = () => {
   if (loadError) {
     return <div>Map cannot be loaded right now, sorry.</div>;
   }
-
+  console.log(places);
   return isLoaded ? (
     <Box w='50%'>
       <Autocomplete

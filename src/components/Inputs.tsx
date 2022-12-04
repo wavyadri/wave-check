@@ -1,18 +1,18 @@
 import AutocompleteInput from './AutocompleteInput';
 import { HStack, Box, Text } from '@chakra-ui/react';
 
-const Selects = () => {
+const Inputs = () => {
   return (
     <HStack spacing={5}>
       <Box w='50%'>
-        <AutocompleteInput />
+        <AutocompleteInput id={0} />
       </Box>
       <Text>&</Text>
       <Box w='50%'>
-        <AutocompleteInput />
+        <AutocompleteInput id={1} />
       </Box>
     </HStack>
   );
 };
 
-export default Selects;
+export default Inputs;
