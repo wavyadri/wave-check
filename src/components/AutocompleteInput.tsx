@@ -50,7 +50,6 @@ const AutocompleteInput = (props: AutocompleteInputProps) => {
   if (loadError) {
     return <div>Map cannot be loaded right now, sorry.</div>;
   }
-  console.log(places);
   return isLoaded ? (
     <Box w='50%'>
       <Autocomplete

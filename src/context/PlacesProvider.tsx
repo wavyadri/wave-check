@@ -5,7 +5,7 @@ export interface ContextInterface {
   setPlaces: React.Dispatch<React.SetStateAction<Record<number, Place>>>;
 }
 
-interface Place {
+export interface Place {
   lat?: number;
   lng?: number;
 }
