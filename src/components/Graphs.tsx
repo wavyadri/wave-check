@@ -11,61 +11,27 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
+  Filler,
   Legend,
+  BarElement,
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  PointElement,
+  LineElement,
   BarElement,
   Title,
   Tooltip,
+  Filler,
   Legend
 );
-
-const tideData = {
-  data: [
-    {
-      height: '1.18',
-      time: '2019-03-15 03:40:44+00:00',
-      type: 'high',
-    },
-    {
-      height: '0.60',
-      time: '2019-03-15 09:53:54+00:00',
-      type: 'low',
-    },
-    {
-      height: '1.20',
-      time: '2019-03-15 16:23:29+00:00',
-      type: 'high',
-    },
-    {
-      height: '0.61',
-      time: '2019-03-15 22:39:15+00:00',
-      type: 'low',
-    },
-  ],
-  meta: {
-    cost: 1,
-    dailyQuota: 800,
-    end: '2019-03-16 00:00',
-    lat: 60.936,
-    lng: 5.114,
-    requestCount: 145,
-    start: '2019-03-15 00:00',
-    station: {
-      distance: 61,
-      lat: 60.398046,
-      lng: 5.320487,
-      name: 'bergen',
-      source: 'sehavniva.no',
-    },
-  },
-};
 
 const barOptions = {
   responsive: true,
@@ -78,20 +44,41 @@ const barOptions = {
       text: 'Chart.js Bar Chart',
     },
   },
+  interaction: {
+    // mode: 'nearest',
+    // axis: 'x',
+    // intersect: false,
+  },
+  // scales: {
+  //   x: {
+  //     stacked: true,
+  //   },
+  //   y: {
+  //     stacked: true,
+  //   },
+  // },
 };
 
 const data = {
-  labels: tideData.data.map((d) => d.time.slice(10, 19)),
+  labels: res.hours
+    // .filter((d, i) => i % 3 === 0)
+    .map((d) => d.time.slice(11, 16)),
   datasets: [
     {
       label: 'Dataset 1',
-      data: res.data.map((d) => d.height),
-      backgroundColor: 'red',
+      data: res.hours.map((d) => d.waveHeight.noaa),
+      borderColor: 'rgba(153, 90, 200)',
+      backgroundColor: 'rgba(153, 90, 200, 0.5)',
+      fill: true,
+      lineTension: 0.04,
     },
     {
       label: 'Dataset 2',
-      data: res2.data.map((d) => d.height),
-      backgroundColor: 'blue',
+      data: res2.hours.map((d) => d.waveHeight.noaa),
+      borderColor: 'rgb(53, 162, 235)',
+      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      fill: true,
+      lineTension: 0.4,
     },
   ],
 };
@@ -106,33 +93,36 @@ const Graphs = () => {
     },
   };
 
-  const getData = async (urls: Place[]) => {
-    try {
-      const response = await Promise.all([
-        axios({
-          ...options,
-          url: `https://api.stormglass.io/v2/tide/extremes/point?lat=${urls[0].lat}&lng=${urls[0].lng}&start=2022-12-06&end=2022-12-07`,
-        }),
-        axios({
-          ...options,
-          url: `https://api.stormglass.io/v2/tide/extremes/point?lat=${urls[1].lat}&lng=${urls[1].lng}&start=2022-12-06&end=2022-12-07`,
-        }),
-      ]);
-      console.log('res', response);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const getData = async (urls: Place[]) => {
+  //   const params =
+  //     'waveHeight,wavePeriod,swellHeight,swellPeriod,swellDirection';
+  //   try {
+  //     const response = await Promise.all([
+  //       axios({
+  //         ...options,
+  //         url: `https://api.stormglass.io/v2/weather/point?lat=${urls[0].lat}&lng=${urls[0].lng}&start=2022-12-09&params=${params}`,
+  //       }),
+  //       axios({
+  //         ...options,
+  //         url: `https://api.stormglass.io/v2/weather/point?lat=${urls[1].lat}&lng=${urls[1].lng}&start=2022-12-09&params=${params}`,
+  //       }),
+  //     ]);
+  //     console.log('res', response);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   useEffect(() => {
     const coordinates = Object.values(places);
     if (coordinates.length === 2) {
-      getData(coordinates);
+      // getData(coordinates);
     }
   }, [places]);
 
   return (
     <Box>
+      <Line options={barOptions} data={data} />
       <Bar options={barOptions} data={data} />
     </Box>
   );
