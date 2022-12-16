@@ -1,6 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import moment from 'moment';
 import { res, res2 } from './res';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import {
   PlacesContext,
   ContextInterface,
@@ -18,8 +19,9 @@ import {
   Filler,
   Legend,
   BarElement,
+  ChartOptions,
 } from 'chart.js';
-import { Line, Bar } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
@@ -33,7 +35,7 @@ ChartJS.register(
   Legend
 );
 
-const barOptions = {
+const barOptions: ChartOptions = {
   responsive: true,
   plugins: {
     legend: {
@@ -44,47 +46,12 @@ const barOptions = {
       text: 'Chart.js Bar Chart',
     },
   },
-  interaction: {
-    // mode: 'nearest',
-    // axis: 'x',
-    // intersect: false,
-  },
-  // scales: {
-  //   x: {
-  //     stacked: true,
-  //   },
-  //   y: {
-  //     stacked: true,
-  //   },
-  // },
-};
-
-const data = {
-  labels: res.hours
-    // .filter((d, i) => i % 3 === 0)
-    .map((d) => d.time.slice(11, 16)),
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: res.hours.map((d) => d.waveHeight.noaa),
-      borderColor: 'rgba(153, 90, 200)',
-      backgroundColor: 'rgba(153, 90, 200, 0.5)',
-      fill: true,
-      lineTension: 0.04,
-    },
-    {
-      label: 'Dataset 2',
-      data: res2.hours.map((d) => d.waveHeight.noaa),
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      fill: true,
-      lineTension: 0.4,
-    },
-  ],
 };
 
 const Graphs = () => {
-  const { places } = useContext(PlacesContext) as ContextInterface;
+  const { places, data, setData } = useContext(
+    PlacesContext
+  ) as ContextInterface;
   console.log(places);
   const options = {
     method: 'GET',
@@ -93,39 +60,68 @@ const Graphs = () => {
     },
   };
 
-  // const getData = async (urls: Place[]) => {
-  //   const params =
-  //     'waveHeight,wavePeriod,swellHeight,swellPeriod,swellDirection';
-  //   try {
-  //     const response = await Promise.all([
-  //       axios({
-  //         ...options,
-  //         url: `https://api.stormglass.io/v2/weather/point?lat=${urls[0].lat}&lng=${urls[0].lng}&start=2022-12-09&params=${params}`,
-  //       }),
-  //       axios({
-  //         ...options,
-  //         url: `https://api.stormglass.io/v2/weather/point?lat=${urls[1].lat}&lng=${urls[1].lng}&start=2022-12-09&params=${params}`,
-  //       }),
-  //     ]);
-  //     console.log('res', response);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  console.log(data);
+
+  const barData = useMemo(() => {
+    if (!Object.keys(places).length || !data.length) {
+      return false;
+    }
+    return {
+      labels: res.hours
+        .filter((d, i) => i % 3 === 0)
+        .map((d) => d.time.slice(11, 16)),
+      datasets: [
+        {
+          label: 'Dataset 1',
+          data: data[0].hours.map((d) => d.waveHeight.noaa),
+          borderColor: 'rgba(153, 90, 200)',
+          backgroundColor: 'rgba(153, 90, 200, 0.5)',
+          fill: true,
+          lineTension: 0.04,
+        },
+        {
+          label: 'Dataset 2',
+          data: data[1].hours.map((d) => d.waveHeight.noaa),
+          borderColor: 'rgb(53, 162, 235)',
+          backgroundColor: 'rgba(53, 162, 235, 0.5)',
+          fill: true,
+          lineTension: 0.4,
+        },
+      ],
+    };
+  }, [places]);
+
+  const getData = async (urls: Place[]) => {
+    const date = moment().format('YYYY-MM-DD');
+    const params =
+      'waveHeight,wavePeriod,swellHeight,swellPeriod,swellDirection';
+    try {
+      const response = await Promise.all([
+        axios({
+          ...options,
+          url: `https://api.stormglass.io/v2/weather/point?lat=${urls[0].lat}&lng=${urls[0].lng}&start=${date}&params=${params}`,
+        }),
+        axios({
+          ...options,
+          url: `https://api.stormglass.io/v2/weather/point?lat=${urls[1].lat}&lng=${urls[1].lng}&start=${date}&params=${params}`,
+        }),
+      ]);
+      console.log('res', response);
+      setData([response[0].data, response[1].data]);
+    } catch (err) {
+      // trigger error modal here
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     const coordinates = Object.values(places);
     if (coordinates.length === 2) {
-      // getData(coordinates);
+      getData(coordinates);
     }
   }, [places]);
 
-  return (
-    <Box>
-      <Line options={barOptions} data={data} />
-      <Bar options={barOptions} data={data} />
-    </Box>
-  );
+  return <Box>{!!barData && <Bar options={barOptions} data={barData} />}</Box>;
 };
 
 export default Graphs;
