@@ -35,7 +35,7 @@ ChartJS.register(
   Legend
 );
 
-const barOptions: ChartOptions = {
+const barOptions: ChartOptions<'bar'> = {
   responsive: true,
   plugins: {
     legend: {
@@ -52,18 +52,12 @@ const Graphs = () => {
   const { places, data, setData } = useContext(
     PlacesContext
   ) as ContextInterface;
-  console.log(places);
-  const options = {
-    method: 'GET',
-    headers: {
-      Authorization: process.env.REACT_APP_TIDE_KEY,
-    },
-  };
+  console.log('places', places);
 
-  console.log(data);
+  console.log('data', data);
 
   const barData = useMemo(() => {
-    if (!Object.keys(places).length || !data.length) {
+    if (!data || !Object.keys(places).length || !data.length) {
       return false;
     }
     return {
@@ -92,6 +86,12 @@ const Graphs = () => {
   }, [places]);
 
   const getData = async (urls: Place[]) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: process.env.REACT_APP_TIDE_KEY,
+      },
+    };
     const date = moment().format('YYYY-MM-DD');
     const params =
       'waveHeight,wavePeriod,swellHeight,swellPeriod,swellDirection';

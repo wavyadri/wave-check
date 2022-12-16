@@ -4,8 +4,8 @@ import { AxiosResponse } from 'axios';
 export interface ContextInterface {
   places: Record<number, Place>;
   setPlaces: React.Dispatch<React.SetStateAction<Record<number, Place>>>;
-  data: PlacesResponse[];
-  setData: React.Dispatch<React.SetStateAction<PlacesResponse[]>> | [];
+  data: PlacesResponse[] | [];
+  setData: React.Dispatch<React.SetStateAction<PlacesResponse[] | []>>;
 }
 
 export interface Place {
