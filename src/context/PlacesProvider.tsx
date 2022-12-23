@@ -1,5 +1,4 @@
 import { createContext, useState } from 'react';
-import { AxiosResponse } from 'axios';
 
 export interface ContextInterface {
   places: Record<number, Place>;
@@ -11,6 +10,7 @@ export interface ContextInterface {
 export interface Place {
   lat?: number;
   lng?: number;
+  name?: string;
 }
 
 type PlacesData = {

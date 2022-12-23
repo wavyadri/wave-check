@@ -36,6 +36,7 @@ const AutocompleteInput = (props: AutocompleteInputProps) => {
         [props.id]: {
           lat: newPlace.geometry?.location?.lat(),
           lng: newPlace.geometry?.location?.lng(),
+          name: newPlace.name,
         },
       });
     }
@@ -51,16 +52,12 @@ const AutocompleteInput = (props: AutocompleteInputProps) => {
     return <div>Map cannot be loaded right now, sorry.</div>;
   }
   return isLoaded ? (
-    <Box w='50%'>
+    <Box w='100%'>
       <Autocomplete
         onLoad={(a) => onLoad(a)}
         onPlaceChanged={() => onPlaceChanged()}
       >
-        <Input
-          type='text'
-          variant='flushed'
-          placeholder='Customized your placeholder'
-        />
+        <Input type='text' variant='flushed' placeholder='Enter a surf spot' />
       </Autocomplete>
     </Box>
   ) : (
