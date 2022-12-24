@@ -1,5 +1,5 @@
 import AutocompleteInput from './AutocompleteInput';
-import { HStack, VStack, Box, Text } from '@chakra-ui/react';
+import { HStack, Box, Text } from '@chakra-ui/react';
 
 const Inputs = () => {
   return (

@@ -67,30 +67,26 @@ const Graph = () => {
   const [error, setError] = useState('');
 
   const barData = useMemo(() => {
-    // if (!data || !Object.keys(places).length || !data.length) {
-    //   return false;
-    // }
+    if (!data || !Object.keys(places).length || !data.length) {
+      return false;
+    }
     return {
-      // labels: data[0].hours
-      labels: data1A.hours
+      labels: data[0].hours
         .filter((d, i) => i % 3 === 0)
         .map((d) => d.time.slice(11, 16)),
       datasets: [
         {
-          // label: places[0].name,
-          // data: data[0].hours.map((d) => d.waveHeight.noaa),
-          label: '1',
-          data: data1A.hours.map((d) => d.waveHeight.noaa),
+          label: places[0].name,
+          data: data[0].hours.map((d) => d.waveHeight.noaa),
+
           borderColor: '#FFC482',
           backgroundColor: '#FFC482',
           fill: true,
           lineTension: 0.04,
         },
         {
-          // label: places[1].name,
-          // data: data[1].hours.map((d) => d.waveHeight.noaa),
-          label: '2',
-          data: data1A.hours.map((d) => d.waveHeight.noaa),
+          label: places[1].name,
+          data: data[1].hours.map((d) => d.waveHeight.noaa),
           borderColor: '#66999B',
           backgroundColor: '#66999B',
           fill: true,
@@ -98,7 +94,7 @@ const Graph = () => {
         },
       ],
     };
-  }, [places]);
+  }, [data]);
 
   const getData = async (urls: Place[]) => {
     const options = {
@@ -135,7 +131,7 @@ const Graph = () => {
   useEffect(() => {
     const coordinates = Object.values(places);
     if (coordinates.length === 2 && coordinates[0].lat && coordinates[1].lat) {
-      // getData(coordinates);
+      getData(coordinates);
     }
   }, [places]);
 

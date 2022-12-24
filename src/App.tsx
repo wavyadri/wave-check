@@ -1,9 +1,9 @@
-import React from 'react';
 import Header from './components/Header';
-
-import { Box } from '@chakra-ui/react';
 import Inputs from './components/Inputs';
 import Graph from './components/Graph';
+import Footer from './components/Footer';
+
+import { Box } from '@chakra-ui/react';
 
 function App() {
   return (
@@ -11,6 +11,7 @@ function App() {
       <Header />
       <Inputs />
       <Graph />
+      <Footer />
     </Box>
   );
 }

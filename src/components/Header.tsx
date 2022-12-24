@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { HStack, Text } from '@chakra-ui/react';
 import { TimeIcon } from '@chakra-ui/icons';
-import './styles.css';
+import '../styles.css';
 
 const Header = () => {
   const [time, setTime] = useState(new Date().toUTCString().slice(17, 25));
