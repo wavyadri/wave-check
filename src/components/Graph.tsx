@@ -1,6 +1,5 @@
 import axios from 'axios';
 import moment from 'moment';
-import { data1A } from './res2';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import {
   PlacesContext,
@@ -94,7 +93,7 @@ const Graph = () => {
         },
       ],
     };
-  }, [data]);
+  }, [data, places]);
 
   const getData = async (urls: Place[]) => {
     const options = {
