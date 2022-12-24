@@ -132,7 +132,7 @@ const Graph = () => {
     if (coordinates.length === 2 && coordinates[0].lat && coordinates[1].lat) {
       getData(coordinates);
     }
-  }, [places]);
+  });
 
   return (
     <Box py={3}>
